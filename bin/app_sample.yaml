@@ -1,0 +1,9 @@
+version: v1
+server:
+  port:
+database:
+  kind: mysql
+  user:
+  secret:
+  host:
+  schema:
