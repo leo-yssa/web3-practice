@@ -8,7 +8,8 @@ import (
 
 type Controller interface {
 	SignUp(ctx *gin.Context)
-	AuthCodeURL(ctx *gin.Context)
+	GoogleAuthCodeURL(ctx *gin.Context)
+	GoogleLogin(ctx *gin.Context)
 }
 
 func NewController(rdb *gorm.DB, cache *redis.Client) Controller {

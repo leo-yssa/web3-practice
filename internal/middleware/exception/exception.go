@@ -10,21 +10,21 @@ import (
 type ExceptionStatus int
 
 const (
-	INTERNAL_SERVER_ERROR ExceptionStatus = iota + 1
-	BAD_REQUEST
+	BAD_REQUEST ExceptionStatus = iota + 1
 	CONFLICT
+	UNAUTHORIZED
 )
 
 func (e ExceptionStatus) GetMessage() *dto.Response {
 	return [...]*dto.Response{
 		{
-			Message: "INTERNAL_SERVER_ERROR",
-		},
-		{
 			Message: "BAD_REQUEST",
 		},
 		{
 			Message: "CONFLICT",
+		},
+		{
+			Message: "UNAUTHORIZED",
 		},
 	}[e-1]
 }
@@ -35,8 +35,10 @@ func ExceptionHandler(ctx *gin.Context, err interface{}) {
 		ctx.JSON(http.StatusBadRequest, BAD_REQUEST.GetMessage())
 	case CONFLICT:
 		ctx.JSON(http.StatusConflict, CONFLICT.GetMessage())
+	case UNAUTHORIZED:
+		ctx.JSON(http.StatusConflict, CONFLICT.GetMessage())
 	default:
-		ctx.JSON(http.StatusInternalServerError, INTERNAL_SERVER_ERROR.GetMessage())
+		ctx.JSON(http.StatusInternalServerError, err)
 	}
 	ctx.Abort()
 }

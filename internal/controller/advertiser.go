@@ -27,14 +27,14 @@ func (ac *advertiserController) SignUp(ctx *gin.Context) {
 	}
 	advertisers, err := ac.asvc.FindAdvertiserByEmail(request.Email)
 	if err != nil {
-		panic(exception.INTERNAL_SERVER_ERROR)
+		panic(err)
 	}
 	if len(advertisers) > 0 {
 		panic(exception.CONFLICT)
 	}
 	tx, _ := ctx.Keys["tx"].(*gorm.DB)
 	if err := ac.asvc.CreateAdvertiser(request, tx); err != nil {
-		panic(exception.INTERNAL_SERVER_ERROR)
+		panic(err)
 	}
 	ctx.JSON(http.StatusOK, &dto.Response{
 		Message: "OK",

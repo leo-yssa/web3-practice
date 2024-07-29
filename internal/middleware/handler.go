@@ -13,6 +13,8 @@ func NewGinHandler(rdb *gorm.DB, ctrl controller.Controller) *gin.Engine {
 	api := r.Group("", defaultHandler(rdb))
 	{
 		api.POST("/advertiser", ctrl.SignUp)
+		api.GET("/audience/google", ctrl.GoogleAuthCodeURL)
+		api.POST("/audience/google", ctrl.GoogleLogin)
 	}
 	return r
 }
