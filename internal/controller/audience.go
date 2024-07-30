@@ -1,9 +1,8 @@
 package controller
 
 import (
-	"net/http"
 	"web3-practice/internal/domain/dto"
-	"web3-practice/internal/middleware/exception"
+	"web3-practice/internal/middleware/response"
 	"web3-practice/pkg/util"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +26,7 @@ func (ac *audienceController) GoogleAuthCodeURL(ctx *gin.Context) {
 	if err := ac.cache.Set(uuid, state, 0).Err(); err != nil {
 		panic(err)
 	}
-	ctx.JSON(http.StatusOK, &dto.GoogleAuthCodeURL{
+	response.Response(ctx, response.OK, &dto.GoogleAuthCodeURL{
 		Uuid:  uuid,
 		State: state,
 	})
@@ -36,14 +35,14 @@ func (ac *audienceController) GoogleAuthCodeURL(ctx *gin.Context) {
 func (ac *audienceController) GoogleLogin(ctx *gin.Context) {
 	var request *dto.GoogleLogin
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		panic(exception.BAD_REQUEST)
+		response.Exception(response.BAD_REQUEST, err)
 	}
 	value, err := ac.cache.Get(request.Uuid).Result()
 	if err != nil {
-		panic(err)
+		response.Exception(response.INTERNAL_SERVER_ERROR, err)
 	}
 	if value != request.State {
-		panic(exception.BAD_REQUEST)
+		response.Exception(response.BAD_REQUEST, err)
 	}
-	ctx.JSON(http.StatusOK, "")
+	response.Response(ctx, response.OK, "")
 }

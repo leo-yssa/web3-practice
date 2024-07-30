@@ -7,3 +7,10 @@ database:
   secret:
   host:
   schema:
+cache:
+  kind: redis
+  host:
+  secret:
+
+gateway:
+  host:

@@ -1,9 +1,8 @@
 package controller
 
 import (
-	"net/http"
 	"web3-practice/internal/domain/dto"
-	"web3-practice/internal/middleware/exception"
+	"web3-practice/internal/middleware/response"
 	"web3-practice/internal/service"
 
 	"github.com/gin-gonic/gin"
@@ -23,20 +22,18 @@ type advertiserController struct {
 func (ac *advertiserController) SignUp(ctx *gin.Context) {
 	var request *dto.AdvertiserCreation
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		panic(exception.BAD_REQUEST)
+		response.Exception(response.BAD_REQUEST, err)
 	}
 	advertisers, err := ac.asvc.FindAdvertiserByEmail(request.Email)
 	if err != nil {
-		panic(err)
+		response.Exception(response.INTERNAL_SERVER_ERROR, err)
 	}
 	if len(advertisers) > 0 {
-		panic(exception.CONFLICT)
+		response.Exception(response.CONFLICT, err)
 	}
 	tx, _ := ctx.Keys["tx"].(*gorm.DB)
 	if err := ac.asvc.CreateAdvertiser(request, tx); err != nil {
-		panic(err)
+		response.Exception(response.INTERNAL_SERVER_ERROR, err)
 	}
-	ctx.JSON(http.StatusOK, &dto.Response{
-		Message: "OK",
-	})
+	response.Response(ctx, response.OK, "")
 }

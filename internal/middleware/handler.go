@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"web3-practice/internal/controller"
-	"web3-practice/internal/middleware/exception"
+	"web3-practice/internal/middleware/response"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -25,7 +25,7 @@ func defaultHandler(rdb *gorm.DB) gin.HandlerFunc {
 		defer func() {
 			if err := recover(); err != nil {
 				tx.Rollback()
-				exception.ExceptionHandler(ctx, err)
+				response.ExceptionHandler(ctx, err)
 			} else {
 				tx.Commit()
 			}
