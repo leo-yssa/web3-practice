@@ -1,4 +1,4 @@
-package server
+package config
 
 import (
 	"github.com/spf13/viper"
@@ -9,6 +9,7 @@ type Config struct {
 	Server   serverConfig   `yaml:"server"`
 	Database databaseConfig `yaml:"database"`
 	Cache    cacheConfig    `yaml:"cache"`
+	Jwt      jwtConfig      `yaml:"jwt"`
 	Gateway  gatewayConfig  `yaml:"gateway"`
 }
 
@@ -28,6 +29,16 @@ type cacheConfig struct {
 	Kind   string `yaml:"kind"`
 	Host   string `yaml:"host"`
 	Secret string `yaml:"secret"`
+}
+
+type jwtConfig struct {
+	Secret  string         `yaml:"secret"`
+	Access  jwtTokenConfig `yaml:"access"`
+	Refresh jwtTokenConfig `yaml:"refresh"`
+}
+
+type jwtTokenConfig struct {
+	Duration string `yaml:"duration"`
 }
 
 type gatewayConfig struct {

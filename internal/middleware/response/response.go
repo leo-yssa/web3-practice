@@ -13,6 +13,8 @@ type ResponseStatus int
 
 const (
 	OK ResponseStatus = iota + 1
+	CREATED
+	NOT_ACCEPTABLE
 	BAD_REQUEST
 	CONFLICT
 	UNAUTHORIZED
@@ -22,6 +24,8 @@ const (
 func (r ResponseStatus) GetStatus() string {
 	return [...]string{
 		"OK",
+		"CREATED",
+		"NOT_ACCEPTABLE",
 		"BAD_REQUEST",
 		"CONFLICT",
 		"UNAUTHORIZED",
@@ -32,6 +36,8 @@ func (r ResponseStatus) GetStatus() string {
 func (e ResponseStatus) GetMessage() string {
 	return [...]string{
 		"OK",
+		"CREATED",
+		"NOT_ACCEPTABLE",
 		"BAD_REQUEST",
 		"CONFLICT",
 		"UNAUTHORIZED",
@@ -53,8 +59,12 @@ func ExceptionHandler(ctx *gin.Context, err interface{}) {
 		ctx.JSON(http.StatusConflict, BuildReponse(CONFLICT, &dto.Error{
 			Message: msg,
 		}))
+	case NOT_ACCEPTABLE.GetStatus():
+		ctx.JSON(http.StatusNotAcceptable, BuildReponse(NOT_ACCEPTABLE, &dto.Error{
+			Message: msg,
+		}))
 	case UNAUTHORIZED.GetStatus():
-		ctx.JSON(http.StatusConflict, BuildReponse(UNAUTHORIZED, &dto.Error{
+		ctx.JSON(http.StatusUnauthorized, BuildReponse(UNAUTHORIZED, &dto.Error{
 			Message: msg,
 		}))
 	case INTERNAL_SERVER_ERROR.GetStatus():
@@ -70,6 +80,8 @@ func Response[T any](ctx *gin.Context, status ResponseStatus, data T) {
 	switch status {
 	case OK:
 		ctx.JSON(http.StatusOK, BuildReponse(OK, data))
+	case CREATED:
+		ctx.JSON(http.StatusCreated, BuildReponse(OK, data))
 	}
 }
 

@@ -1,0 +1,65 @@
+basePath: /
+definitions:
+  dto.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.GoogleAuthCodeURL:
+    properties:
+      state:
+        type: string
+      uuid:
+        type: string
+    type: object
+  dto.Response:
+    properties:
+      data:
+        type: object
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+info:
+  contact:
+    name: Leo-yssa
+  description: Advertise Platform
+  title: Advertise Platform
+  version: 1.0.0
+paths:
+  /api/v1/audience/google:
+    get:
+      description: Google OAuth URL 전송
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.GoogleAuthCodeURL'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.Error'
+              type: object
+      summary: Google OAuth URL 전송
+      tags:
+      - Audience
+schemes:
+- http
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

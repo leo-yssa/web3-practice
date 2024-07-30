@@ -11,6 +11,11 @@ cache:
   kind: redis
   host:
   secret:
-
+jwt:
+  secret:
+  access:
+    duration:
+  refresh:
+    duration:
 gateway:
   host:

@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
+	_ "web3-practice/docs"
+	"web3-practice/internal/config"
 	"web3-practice/internal/server"
 
 	"github.com/spf13/cobra"
 )
 
 var (
-	name = "app"
-	cmd  = &cobra.Command{Use: name}
+	cmd = &cobra.Command{Use: server.Name}
 )
 
 func startCmd(srv *server.Server) *cobra.Command {
@@ -28,21 +29,35 @@ func startCmd(srv *server.Server) *cobra.Command {
 	}
 }
 
-func initCmd(cfg *server.Config) error {
-	s, err := server.NewServer(cfg)
+func initCmd(cfg *config.Config) error {
+	srv, err := server.NewServer(cfg)
 	if err != nil {
 		return err
 	}
-	cmd.AddCommand(startCmd(s))
+	cmd.AddCommand(startCmd(srv))
 	return cmd.Execute()
 }
 
+// @title Advertise Platform
+// @version 1.0.0
+// @description Advertise Platform
+// @schemes http
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+// @consumes application/json multipart/form-data
+// @produces application/json
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name Leo-yssa
+
+// @BasePath /
 func main() {
-	c, err := server.InitConfig(name)
+	cfg, err := config.InitConfig(server.Name)
 	if err != nil {
 		panic(err)
 	}
-	if err = initCmd(c); err != nil {
+	if err = initCmd(cfg); err != nil {
 		panic(err)
 	}
 }
