@@ -4,18 +4,18 @@ import (
 	"web3-practice/internal/config"
 	"web3-practice/internal/controller"
 	"web3-practice/internal/middleware/response"
+	"web3-practice/internal/repository"
 	"web3-practice/internal/service"
 	"web3-practice/pkg/swagger"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func NewGinHandler(rdb *gorm.DB, ctrl controller.Controller, cfg *config.Config) *gin.Engine {
+func NewGinHandler(repo repository.Repository, ctrl controller.Controller, cfg *config.Config) *gin.Engine {
 	r := gin.New()
 	swagger.Initialize(r)
 	ts := service.NewTokenService(cfg)
-	api := r.Group("", defaultHandler(rdb))
+	api := r.Group("", defaultHandler(repo))
 	{
 		advertiser := api.Group("/advertiser")
 		advertiser.POST("/sign-up", ctrl.SignUp)
@@ -64,9 +64,9 @@ func issueToken(ts service.TokenService) gin.HandlerFunc {
 	}
 }
 
-func defaultHandler(rdb *gorm.DB) gin.HandlerFunc {
+func defaultHandler(repo repository.Repository) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		tx := rdb.Begin()
+		tx := repo.Begin()
 		defer func() {
 			if err := recover(); err != nil {
 				tx.Rollback()

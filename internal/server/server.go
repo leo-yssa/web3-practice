@@ -32,11 +32,11 @@ func NewServer(cfg *config.Config) (*Server, error) {
 	if err := repo.Initialize(); err != nil {
 		return nil, err
 	}
-	ctrl := controller.NewController(repo, cache)
+	ctrl := controller.NewController(repo, cache, cfg)
 	return &Server{
 		Server: &http.Server{
 			Addr:    port,
-			Handler: middleware.NewGinHandler(rdb, ctrl, cfg),
+			Handler: middleware.NewGinHandler(repo, ctrl, cfg),
 		},
 		serve: make(chan error),
 	}, nil

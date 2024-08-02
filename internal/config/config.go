@@ -5,19 +5,20 @@ import (
 )
 
 type Config struct {
-	Version  string         `yaml:"version"`
-	Server   serverConfig   `yaml:"server"`
-	Database databaseConfig `yaml:"database"`
-	Cache    cacheConfig    `yaml:"cache"`
-	Jwt      jwtConfig      `yaml:"jwt"`
-	Gateway  gatewayConfig  `yaml:"gateway"`
+	Version  string          `yaml:"version"`
+	Server   *ServerConfig   `yaml:"server"`
+	Database *DatabaseConfig `yaml:"database"`
+	Cache    *CacheConfig    `yaml:"cache"`
+	Jwt      *JwtConfig      `yaml:"jwt"`
+	Oauth    *OauthConfig    `yaml:"oauth"`
+	Gateway  *GatewayConfig  `yaml:"gateway"`
 }
 
-type serverConfig struct {
+type ServerConfig struct {
 	Port string `yaml:"port"`
 }
 
-type databaseConfig struct {
+type DatabaseConfig struct {
 	Kind   string `yaml:"kind"`
 	User   string `yaml:"user"`
 	Secret string `yaml:"secret"`
@@ -25,23 +26,42 @@ type databaseConfig struct {
 	Schema string `yaml:"schema"`
 }
 
-type cacheConfig struct {
+type CacheConfig struct {
 	Kind   string `yaml:"kind"`
 	Host   string `yaml:"host"`
 	Secret string `yaml:"secret"`
 }
 
-type jwtConfig struct {
-	Secret  string         `yaml:"secret"`
-	Access  jwtTokenConfig `yaml:"access"`
-	Refresh jwtTokenConfig `yaml:"refresh"`
+type JwtConfig struct {
+	Secret  string          `yaml:"secret"`
+	Access  *JwtTokenConfig `yaml:"access"`
+	Refresh *JwtTokenConfig `yaml:"refresh"`
 }
 
-type jwtTokenConfig struct {
+type JwtTokenConfig struct {
 	Duration string `yaml:"duration"`
 }
 
-type gatewayConfig struct {
+type OauthConfig struct {
+	Google GoogleConfig `yaml:"google"`
+}
+
+type GoogleConfig struct {
+	Client   GoogleClient   `yaml:"client"`
+	Redirect GoogleRedirect `yaml:"redirect"`
+}
+
+type GoogleClient struct {
+	Id     string `yaml:"id"`
+	Secret string `yaml:"secret"`
+}
+
+type GoogleRedirect struct {
+	Login   string `yaml:"login"`
+	Youtube string `yaml:"youtube"`
+}
+
+type GatewayConfig struct {
 	Host string `yaml:"host"`
 }
 

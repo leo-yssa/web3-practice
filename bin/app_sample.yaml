@@ -17,5 +17,13 @@ jwt:
     duration:
   refresh:
     duration:
+oauth:
+  google:
+    client:
+      id:
+      secret:
+    redirect:
+      login:
+      youtube:
 gateway:
   host:

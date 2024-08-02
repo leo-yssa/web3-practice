@@ -7,9 +7,9 @@ import (
 )
 
 type Repository interface {
-	Initialize() error
+	Begin() *gorm.DB
 	CreateAdvertiser(advertiser *dao.Advertiser, tx *gorm.DB) error
-	DB() *gorm.DB
+	Initialize() error
 	FindAdvertiserByEmail(email string) ([]*dao.Advertiser, error)
 }
 
@@ -34,6 +34,6 @@ func (r *repository) Initialize() error {
 	return nil
 }
 
-func (r *repository) DB() *gorm.DB {
-	return r.rdb
+func (r *repository) Begin() *gorm.DB {
+	return r.rdb.Begin()
 }
