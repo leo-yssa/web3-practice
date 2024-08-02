@@ -26,5 +26,6 @@ go.work.sum
 .env
 
 app.yaml
+gateway.yaml
 
 *debug*

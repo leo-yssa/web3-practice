@@ -36,13 +36,6 @@ func (ac *advertiserController) SignUp(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		response.Exception(response.BAD_REQUEST, err)
 	}
-	advertisers, err := ac.asvc.FindAdvertiserByEmail(request.Email)
-	if err != nil {
-		response.Exception(response.INTERNAL_SERVER_ERROR, err)
-	}
-	if len(advertisers) > 0 {
-		response.Exception(response.CONFLICT, err)
-	}
 	tx, _ := ctx.Keys["tx"].(*gorm.DB)
 	if err := ac.asvc.CreateAdvertiser(request, tx); err != nil {
 		response.Exception(response.INTERNAL_SERVER_ERROR, err)

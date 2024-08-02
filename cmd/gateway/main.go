@@ -2,18 +2,17 @@ package main
 
 import (
 	"fmt"
-	_ "web3-practice/docs"
 	"web3-practice/internal/config"
 	"web3-practice/internal/server"
 
 	"github.com/spf13/cobra"
 )
 
-const name = "app"
+const name = "gateway"
 
 var cmd = &cobra.Command{Use: name}
 
-func startCmd(srv *server.HttpServer) *cobra.Command {
+func startCmd(srv *server.GrpcServer) *cobra.Command {
 	return &cobra.Command{
 		Use:   "start",
 		Short: "Starts the server.",
@@ -30,7 +29,7 @@ func startCmd(srv *server.HttpServer) *cobra.Command {
 }
 
 func initCmd(cfg *config.Config) error {
-	srv, err := server.NewHttpServer(cfg)
+	srv, err := server.NewGrpcServer(cfg)
 	if err != nil {
 		return err
 	}
@@ -38,20 +37,6 @@ func initCmd(cfg *config.Config) error {
 	return cmd.Execute()
 }
 
-// @title Advertise Platform
-// @version 1.0.0
-// @description Advertise Platform
-// @schemes http
-// @securityDefinitions.apikey Bearer
-// @in header
-// @name Authorization
-// @consumes application/json multipart/form-data
-// @produces application/json
-// @termsOfService http://swagger.io/terms/
-
-// @contact.name Leo-yssa
-
-// @BasePath /
 func main() {
 	cfg, err := config.InitConfig(name)
 	if err != nil {

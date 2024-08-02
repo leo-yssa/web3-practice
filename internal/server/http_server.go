@@ -10,14 +10,12 @@ import (
 	"web3-practice/internal/repository"
 )
 
-const Name = "app"
-
-type Server struct {
+type HttpServer struct {
 	*http.Server
 	serve chan error
 }
 
-func NewServer(cfg *config.Config) (*Server, error) {
+func NewHttpServer(cfg *config.Config) (*HttpServer, error) {
 	port := fmt.Sprintf(":%s", cfg.Server.Port)
 	validator.InitValidator()
 	rdb, err := newRDB(cfg)
@@ -33,7 +31,7 @@ func NewServer(cfg *config.Config) (*Server, error) {
 		return nil, err
 	}
 	ctrl := controller.NewController(repo, cache, cfg)
-	return &Server{
+	return &HttpServer{
 		Server: &http.Server{
 			Addr:    port,
 			Handler: middleware.NewGinHandler(repo, ctrl, cfg),
@@ -42,15 +40,11 @@ func NewServer(cfg *config.Config) (*Server, error) {
 	}, nil
 }
 
-func (s *Server) Start(args []string) error {
+func (s *HttpServer) Start(args []string) error {
 	go func() {
-		if err := s.Listen(); err != nil {
+		if err := s.ListenAndServe(); err != nil {
 			s.serve <- err
 		}
 	}()
 	return <-s.serve
-}
-
-func (s *Server) Listen() error {
-	return s.ListenAndServe()
 }
