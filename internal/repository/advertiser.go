@@ -7,12 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type AdvertiserRepository interface {
-	CreateAdvertiser(advertiser *dao.Advertiser, tx *gorm.DB) error
-	FindAdvertiserByEmail(email string) ([]*dao.Advertiser, error)
-}
-
-func NewAdvertiserRepository(rdb *gorm.DB) AdvertiserRepository {
+func newAdvertiserRepository(rdb *gorm.DB) *advertiserRepository {
 	return &advertiserRepository{
 		rdb: rdb,
 	}

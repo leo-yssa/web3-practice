@@ -3,17 +3,19 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"web3-practice/internal/config"
 	"web3-practice/internal/controller"
 	"web3-practice/internal/middleware"
 	"web3-practice/internal/middleware/validator"
+	"web3-practice/internal/repository"
 )
 
-type Server struct {
+type HttpServer struct {
 	*http.Server
 	serve chan error
 }
 
-func NewServer(cfg *Config) (*Server, error) {
+func NewHttpServer(cfg *config.Config) (*HttpServer, error) {
 	port := fmt.Sprintf(":%s", cfg.Server.Port)
 	validator.InitValidator()
 	rdb, err := newRDB(cfg)
@@ -24,25 +26,25 @@ func NewServer(cfg *Config) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	ctrl := controller.NewController(rdb, cache)
-	return &Server{
+	repo := repository.NewRepository(rdb)
+	if err := repo.Initialize(); err != nil {
+		return nil, err
+	}
+	ctrl := controller.NewController(repo, cache, cfg)
+	return &HttpServer{
 		Server: &http.Server{
 			Addr:    port,
-			Handler: middleware.NewGinHandler(rdb, ctrl),
+			Handler: middleware.NewGinHandler(repo, ctrl, cfg),
 		},
 		serve: make(chan error),
 	}, nil
 }
 
-func (s *Server) Start(args []string) error {
+func (s *HttpServer) Start(args []string) error {
 	go func() {
-		if err := s.Listen(); err != nil {
+		if err := s.ListenAndServe(); err != nil {
 			s.serve <- err
 		}
 	}()
 	return <-s.serve
-}
-
-func (s *Server) Listen() error {
-	return s.ListenAndServe()
 }

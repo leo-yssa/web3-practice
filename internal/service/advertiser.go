@@ -4,6 +4,7 @@ import (
 	"web3-practice/internal/domain/dao"
 	"web3-practice/internal/domain/dto"
 	"web3-practice/internal/repository"
+	"web3-practice/pkg/rand"
 	"web3-practice/pkg/util"
 
 	"gorm.io/gorm"
@@ -14,18 +15,18 @@ type AdvertiserService interface {
 	FindAdvertiserByEmail(email string) ([]*dao.Advertiser, error)
 }
 
-func NewAdvertiserService(rdb *gorm.DB) AdvertiserService {
+func NewAdvertiserService(repo repository.Repository) AdvertiserService {
 	return &advertiserService{
-		ar: repository.NewAdvertiserRepository(rdb),
+		repo: repo,
 	}
 }
 
 type advertiserService struct {
-	ar repository.AdvertiserRepository
+	repo repository.Repository
 }
 
 func (as *advertiserService) FindAdvertiserByEmail(email string) ([]*dao.Advertiser, error) {
-	return as.ar.FindAdvertiserByEmail(email)
+	return as.repo.FindAdvertiserByEmail(email)
 }
 
 func (as *advertiserService) CreateAdvertiser(advertiser *dto.AdvertiserCreation, tx *gorm.DB) error {
@@ -33,8 +34,8 @@ func (as *advertiserService) CreateAdvertiser(advertiser *dto.AdvertiserCreation
 	if err != nil {
 		return err
 	}
-	return as.ar.CreateAdvertiser(&dao.Advertiser{
-		Id:     util.GenerateULID("AD"),
+	return as.repo.CreateAdvertiser(&dao.Advertiser{
+		Id:     rand.MakeULID("AD"),
 		Email:  advertiser.Email,
 		Secret: secret,
 		Name:   advertiser.Name,

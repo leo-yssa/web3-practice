@@ -1,0 +1,29 @@
+version: v1
+server:
+  port:
+database:
+  kind: mysql
+  user:
+  secret:
+  host:
+  schema:
+cache:
+  kind: redis
+  host:
+  secret:
+jwt:
+  secret:
+  access:
+    duration:
+  refresh:
+    duration:
+oauth:
+  google:
+    client:
+      id:
+      secret:
+    redirect:
+      login:
+      youtube:
+gateway:
+  host:

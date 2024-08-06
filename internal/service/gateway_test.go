@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func loadFixtures() (s service.GatewayService) {
+func loadGateway() (s service.GatewayService) {
 	return service.NewGatewayService(
 		"http://15.164.146.25:8080",
 	)
@@ -27,7 +27,7 @@ func login(s service.GatewayService, loginRequest *dto.LoginRequest) (*dto.Login
 	})
 }
 func TestLogin(t *testing.T) {
-	s := loadFixtures()
+	s := loadGateway()
 	r, err := login(s, &dto.LoginRequest{
 		UserType:                   "ADVERTISER",
 		Email:                      "test1@test.com",
@@ -43,7 +43,7 @@ func TestLogin(t *testing.T) {
 }
 
 func TestMintDHN(t *testing.T) {
-	s := loadFixtures()
+	s := loadGateway()
 	lr, err := login(s, &dto.LoginRequest{
 		UserType:                   "USER",
 		Email:                      "test1@google.com",

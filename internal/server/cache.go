@@ -3,11 +3,12 @@ package server
 import (
 	"errors"
 	"strings"
+	"web3-practice/internal/config"
 
 	"github.com/go-redis/redis"
 )
 
-func newCache(cfg *Config) (*redis.Client, error) {
+func newCache(cfg *config.Config) (*redis.Client, error) {
 	if strings.ToLower(cfg.Cache.Kind) == "redis" {
 		c := redis.NewClient(&redis.Options{
 			Addr:     cfg.Cache.Host,

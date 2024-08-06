@@ -4,12 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"web3-practice/internal/config"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-func newRDB(cfg *Config) (*gorm.DB, error) {
+func newRDB(cfg *config.Config) (*gorm.DB, error) {
 	if strings.ToLower(cfg.Database.Kind) == "mysql" {
 		dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true",
 			cfg.Database.User,
