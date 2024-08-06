@@ -6,7 +6,7 @@ import (
 	"web3-practice/internal/middleware/response"
 	"web3-practice/internal/repository"
 	"web3-practice/internal/service"
-	"web3-practice/pkg/util"
+	"web3-practice/pkg/rand"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
@@ -37,8 +37,11 @@ type audienceController struct {
 // @Success 200 {object} dto.Response{data=dto.GoogleAuthCodeURL}
 // @Failure 500 {object} dto.Response{data=dto.Error}
 func (ac *audienceController) GoogleAuthCodeURL(ctx *gin.Context) {
-	uuid := util.GenerateULID("AUD")
-	state := util.GetState()
+	uuid := rand.MakeULID("AUD")
+	state, err := rand.MakeState()
+	if err != nil {
+		response.Exception(response.INTERNAL_SERVER_ERROR, err)
+	}
 	if err := ac.cache.Set(uuid, state, 0).Err(); err != nil {
 		response.Exception(response.INTERNAL_SERVER_ERROR, err)
 	}

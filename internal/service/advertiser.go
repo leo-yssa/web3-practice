@@ -4,6 +4,7 @@ import (
 	"web3-practice/internal/domain/dao"
 	"web3-practice/internal/domain/dto"
 	"web3-practice/internal/repository"
+	"web3-practice/pkg/rand"
 	"web3-practice/pkg/util"
 
 	"gorm.io/gorm"
@@ -34,7 +35,7 @@ func (as *advertiserService) CreateAdvertiser(advertiser *dto.AdvertiserCreation
 		return err
 	}
 	return as.repo.CreateAdvertiser(&dao.Advertiser{
-		Id:     util.GenerateULID("AD"),
+		Id:     rand.MakeULID("AD"),
 		Email:  advertiser.Email,
 		Secret: secret,
 		Name:   advertiser.Name,
